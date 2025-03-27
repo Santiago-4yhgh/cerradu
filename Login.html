@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Access</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #1E1E2E;
+            height: 100vh;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 400px;
+            background: #FF6B6B;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #FFB400;
+        }
+
+        .profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #FFB400;
+        }
+
+        h1 {
+            font-size: 22px;
+            color: white;
+        }
+
+        .history {
+            margin: 15px 0;
+            padding: 15px;
+            background: #FFB400;
+            border-radius: 10px;
+            color: #1E1E2E;
+        }
+
+        .access-item {
+            display: flex;
+            align-items: center;
+            background: #2ECC71;
+            padding: 12px;
+            border-radius: 10px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            position: relative;
+            color: white;
+        }
+
+        .delete-btn, .edit-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #E63946;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .edit-btn {
+            right: 70px;
+            background: #3498DB;
+        }
+
+        .add-access input {
+            margin-bottom: 10px;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .bottom-nav button {
+            background-color: #FF6B6B;
+            border: none;
+            padding: 10px;
+            color: white;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header>
+            <img id="profile-img" src="profile.jpg" alt="Perfil" class="profile-img">
+            <h1>Historial</h1>
+            <button class="settings-btn"></button>
+        </header>
+
+        <section class="profile-change-container">
+            <input type="file" id="profile-image-input" accept="image/*">
+            <button onclick="changeProfileImage()">Actualizar imagen</button>
+        </section>
+
+        <section class="history">
+            <h2>Accessos</h2>
+            <p class="access-count">0 Accesso</p>
+        </section>
+
+        <section class="access-list">
+            <!-- Los accessos aparecerán aquí -->
+        </section>
+
+        <div class="add-access">
+            <input type="text" id="name" placeholder="Nombre">
+            <input type="text" id="code" placeholder="Código">
+            <input type="time" id="in-time">
+            <input type="time" id="out-time">
+            <button onclick="addAccess()">Agregar Access</button>
+        </div>
+
+        <nav class="bottom-nav">
+            <button></button>
+            <button></button>
+            <button></button>
+            <button></button>
+        </nav>
+    </div>
+
+    <script>
+        function changeProfileImage() {
+            const input = document.getElementById("profile-image-input");
+            const profileImg = document.getElementById("profile-img");
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profileImg.src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function addAccess() {
+            let name = document.getElementById("name").value;
+            let code = document.getElementById("code").value;
+            let inTime = document.getElementById("in-time").value;
+            let outTime = document.getElementById("out-time").value;
+
+            if (name === "" || code === "" || inTime === "" || outTime === "") {
+                alert("Por favor, llena todos los campos.");
+                return;
+            }
+
+            const accessList = document.querySelector(".access-list");
+            const accessItem = document.createElement("div");
+            accessItem.classList.add("access-item");
+            accessItem.innerHTML = `
+                <div class="icon"></div>
+                <div class="info">
+                    <p class="name">${name}</p>
+                    <p class="code">${code}</p>
+                </div>
+                <div class="time">
+                    <p class="in">${inTime}</p>
+                    <p class="out">${outTime}</p>
+                </div>
+                <button class="edit-btn" onclick="editAccess(this)">Editar</button>
+                <button class="delete-btn" onclick="deleteAccess(this)">Eliminar</button>
+            `;
+            accessList.appendChild(accessItem);
+            updateAccessCount();
+            document.getElementById("name").value = "";
+            document.getElementById("code").value = "";
+            document.getElementById("in-time").value = "";
+            document.getElementById("out-time").value = "";
+        }
+
+        function deleteAccess(button) {
+            button.closest('.access-item').remove();
+            updateAccessCount();
+        }
+
+        function editAccess(button) {
+            let accessItem = button.closest('.access-item');
+            let name = accessItem.querySelector(".name").textContent;
+            let code = accessItem.querySelector(".code").textContent;
+            let inTime = accessItem.querySelector(".in").textContent;
+            let outTime = accessItem.querySelector(".out").textContent;
+
+            document.getElementById("name").value = name;
+            document.getElementById("code").value = code;
+            document.getElementById("in-time").value = inTime;
+            document.getElementById("out-time").value = outTime;
+
+            accessItem.remove();
+            updateAccessCount();
+        }
+
+        function updateAccessCount() {
+            const accessCount = document.querySelector(".access-count");
+            const totalAccess = document.querySelectorAll(".access-item").length;
+            accessCount.textContent = totalAccess + " Accesso" + (totalAccess !== 1 ? "s" : "");
+        }
+    </script>
+</body>
+</html>

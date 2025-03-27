@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Perfil</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+        body { display: flex; justify-content: center; align-items: center; background: #1E1E2E; height: 100vh; }
+        .register-container { max-width: 400px; background: #FF6B6B; padding: 30px; border-radius: 15px; color: white; text-align: center; }
+        .login-link { margin: 15px 0; }
+        .login-link a { color: #FFB400; text-decoration: none; }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group input { width: 100%; padding: 12px; border-radius: 8px; background: rgba(255, 255, 255, 0.9); }
+        .register-btn { width: 100%; padding: 12px; background: #2ECC71; color: white; border: none; border-radius: 8px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h1>Crear perfil</h1>
+        <div class="login-link">¿Ya tienes cuenta? <a href="index.html">Inicia sesión aquí</a></div>
+        <form id="register-form">
+            <div class="form-group"><label>Nombre</label><input type="text" id="name" required></div>
+            <div class="form-group"><label>Correo</label><input type="email" id="email" required></div>
+            <div class="form-group"><label>Contraseña</label><input type="password" id="password" required></div>
+            <button type="submit" class="register-btn">Registrar</button>
+        </form>
+    </div>
+
+    <script>
+        // Manejar el envío del formulario
+        document.getElementById('register-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Obtener los datos del formulario
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Almacenar los datos en localStorage
+            localStorage.setItem('userName', name);
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('userPassword', password);
+
+            // Redirigir a la página de inicio de sesión
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
